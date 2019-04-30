@@ -43,6 +43,14 @@ func register() {
 		return
 	}
 
+	log.Println("sending ack")
+	err = binary.Write(conn, binary.BigEndian, uint32(1))
+	if err != nil {
+		conn.Close()
+		log.Println("send ack:", err)
+		return
+	}
+
 	log.Println("proxying", port)
 	go proxyConn(conn, int(port))
 }

@@ -84,6 +84,16 @@ func handleProxyConn(conn net.Conn) {
 			log.Println("try next registered server:", err)
 			continue
 		}
+		var ack uint32
+		err = binary.Read(backendConn, binary.BigEndian, &ack)
+		if err != nil {
+			log.Println("try next registered server:", err)
+			continue
+		}
+		if ack != 1 {
+			log.Println("try next registered server: ack is not 1")
+			continue
+		}
 		break
 	}
 	defer backendConn.Close()
